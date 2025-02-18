@@ -44,6 +44,48 @@ addTodoButton.onclick = function() {
   onAddTodo();
 };
 
+function onEditTodo(todoId, labelId) {
+  let labelElement = document.getElementById(labelId);
+  let todoObjectIndex = todoList.findIndex(function(eachTodo) {
+    return "todo" + eachTodo.uniqueNo === todoId;
+  });
+  
+  let todoObject = todoList[todoObjectIndex];
+  
+  // Create input element for editing
+  let editInputElement = document.createElement("input");
+  editInputElement.type = "text";
+  editInputElement.value = todoObject.text;
+  editInputElement.classList.add("edit-input");
+
+  // Replace label with input element
+  labelElement.replaceWith(editInputElement);
+
+  // Focus on the input element
+  editInputElement.focus();
+
+  // Save changes on blur or enter key press
+  function saveChanges() {
+    let newText = editInputElement.value.trim();
+    if (newText !== "") {
+      todoObject.text = newText;
+      labelElement.textContent = newText;
+      editInputElement.replaceWith(labelElement);
+    } else {
+      alert("Enter Valid Text");
+    }
+  }
+
+  editInputElement.onblur = saveChanges;
+  
+  editInputElement.onkeypress = function(event) {
+    if (event.key === "Enter") {
+      saveChanges();
+    }
+  };
+}
+
+
 function onTodoStatusChange(checkboxId, labelId, todoId) {
   let checkboxElement = document.getElementById(checkboxId);
   let labelElement = document.getElementById(labelId);
@@ -85,13 +127,17 @@ function onDeleteTodo(todoId) {
   todoList.splice(deleteElementIndex, 1);
 }
 
+function editFunction(labelId){
+  let labelElement
+}
+
 function createAndAppendTodo(todo) {
   let todoId = "todo" + todo.uniqueNo;
   let checkboxId = "checkbox" + todo.uniqueNo;
   let labelId = "label" + todo.uniqueNo;
 
   let todoElement = document.createElement("li");
-  todoElement.classList.add("todo-item-container", "d-flex", "flex-row");
+  todoElement.classList.add("todo-item-container", "d-flex", "flex-row",);
   todoElement.id = todoId;
   todoItemsContainer.appendChild(todoElement);
 
@@ -121,12 +167,27 @@ function createAndAppendTodo(todo) {
   }
   labelContainer.appendChild(labelElement);
 
+  let editIconContainer = document.createElement("div");
+  editIconContainer.classList.add("edit-icon-container");
+  labelContainer.appendChild(editIconContainer);
+
+  let editIcon = document.createElement("button");
+  editIcon.textContent = 'Edit'
+  editIcon.classList.add("btn", "btn-primary");
+
+  editIcon.onclick = function () {
+    onEditTodo(todoId, labelId);
+  };
+
+  editIconContainer.appendChild(editIcon);
+
   let deleteIconContainer = document.createElement("div");
   deleteIconContainer.classList.add("delete-icon-container");
   labelContainer.appendChild(deleteIconContainer);
 
-  let deleteIcon = document.createElement("i");
-  deleteIcon.classList.add("far", "fa-trash-alt", "delete-icon");
+  let deleteIcon = document.createElement("button");
+  deleteIcon.textContent = 'Delete'
+  deleteIcon.classList.add("btn","btn-danger");
 
   deleteIcon.onclick = function () {
     onDeleteTodo(todoId);

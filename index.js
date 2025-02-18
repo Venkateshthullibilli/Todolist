@@ -52,19 +52,14 @@ function onEditTodo(todoId, labelId) {
   
   let todoObject = todoList[todoObjectIndex];
   
-  // Create input element for editing
   let editInputElement = document.createElement("input");
   editInputElement.type = "text";
   editInputElement.value = todoObject.text;
   editInputElement.classList.add("edit-input");
-
-  // Replace label with input element
   labelElement.replaceWith(editInputElement);
 
-  // Focus on the input element
   editInputElement.focus();
 
-  // Save changes on blur or enter key press
   function saveChanges() {
     let newText = editInputElement.value.trim();
     if (newText !== "") {
